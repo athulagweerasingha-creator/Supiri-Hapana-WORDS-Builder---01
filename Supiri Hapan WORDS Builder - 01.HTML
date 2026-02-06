@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="si" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <title>Supiri Hapana - Grade 5 Word Builder - 01</title>
+    <style>
+        :root { --primary: #4834d4; --secondary: #686de0; --bg: linear-gradient(135deg, #f0932b 0%, #ffbe76 100%); --card: #ffffff; --text: #130f40; --danger: #eb4d4b; --success: #20bf6b; --warning: #f1c40f; --word-bg: #f0f3ff; --word-border: #bebefa; --wa-green: #25D366; }
+        body.dark-mode { --bg: linear-gradient(135deg, #1e272e 0%, #000000 100%); --card: #2f3542; --text: #ffffff; --word-bg: #57606f; --primary: #70a1ff; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: 0.3s; overflow: hidden; user-select: none; -webkit-user-select: none; }
+        .game-card { width: 92%; max-width: 440px; background: var(--card); border-radius: 25px; padding: 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 4px solid #fff; position: relative; box-sizing: border-box; }
+        .title-l1 { font-size: 45px; margin: 0; color: var(--primary); font-weight: 900; line-height: 1; }
+        .title-l2 { font-size: 28px; margin: 5px 0; font-weight: 800; color: #30336b; }
+        .title-l3 { font-size: 18px; margin: 0 0 15px; font-weight: 700; color: var(--secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .top-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .mini-btn { border: none; padding: 12px 5px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 14px; color: #fff; transition: 0.2s; }
+        .timer-track { width: 100%; height: 12px; background: #eee; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        #time-bar { width: 100%; height: 100%; background-color: var(--success); transition: width 0.1s linear, background-color 0.3s; }
+        .instruction { color: #eb4d4b; font-size: 20px; font-weight: bold; margin-bottom: 10px; }
+        .meaning-box { font-size: 28px; font-weight: bold; color: var(--text); background: #f9f9f9; padding: 10px; border-radius: 15px; margin-bottom: 15px; border: 2px solid var(--primary); }
+        .target-box { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .slot { width: 40px; height: 45px; border-bottom: 4px solid var(--primary); font-size: 30px; font-weight: 900; display: flex; align-items: center; justify-content: center; color: var(--text); }
+        .slot.hint { color: #95afc0; border-bottom-color: #dff9fb; }
+        .pool-box { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 auto 20px auto; justify-content: center; width: 100%; }
+        .word-btn { width: 50px; background: var(--word-bg); border: 2px solid var(--word-border); height: 50px; font-size: 22px; border-radius: 12px; font-weight: bold; cursor: pointer; color: var(--primary); box-shadow: 0 4px 0 #c7c7f5; transition: 0.1s; display: flex; align-items: center; justify-content: center; }
+        .word-btn.used { opacity: 0.2; pointer-events: none; }
+        #msg-text { height: 45px; font-weight: 900; font-size: 35px; margin-bottom: 10px; }
+        .footer { background: #2f3542; padding: 12px; border-radius: 15px; display: flex; flex-direction: column; gap: 10px; color: white; font-weight: bold; }
+        .stats-row { display: flex; justify-content: space-between; width: 100%; align-items: center; }
+        .clear-btn { background: #f0932b; color: white; border: none; padding: 6px 15px; border-radius: 8px; cursor: pointer; font-weight: 800; }
+        .res-title { font-size: 32px; color: var(--primary); font-weight: 900; margin-bottom: 5px; }
+        .res-score { font-size: 22px; font-weight: bold; color: var(--text); margin: 2px 0; }
+        .res-time { font-size: 18px; color: var(--danger); font-weight: bold; margin-bottom: 10px; }
+        .res-promo { background: #f8f9fa; padding: 10px; border-radius: 15px; font-size: 15px; line-height: 1.2; color: #130f40; text-align: center; border: 2px solid var(--wa-green); margin-bottom: 10px; }
+        .wa-section { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 5px; gap: 3px; }
+        .wa-logo { width: 60px; height: 60px; margin-bottom: 2px; }
+        .wa-numbers { font-size: 18px; font-weight: 900; color: #2d3436; letter-spacing: 1px; line-height: 1.2; }
+        .res-btn { margin-top: 5px; padding: 12px; border-radius: 10px; border: none; background: var(--success); color: white; font-weight: bold; cursor: pointer; width: 90%; font-size: 18px; }
+        .exit-btn { margin-top: 5px; padding: 10px; border-radius: 10px; border: none; background: #7f8c8d; color: white; font-weight: bold; cursor: pointer; width: 90%; font-size: 16px; }
+        .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; border-radius: 25px; justify-content: center; align-items: center; }
+        .modal-box { background: white; width: 85%; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .modal-box h3 { font-size: 22px; color: #2c3e50; margin-bottom: 25px; line-height: 1.4; }
+        .modal-btns { display: flex; gap: 15px; }
+        .modal-btn { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; }
+        .btn-yes { background: var(--danger); color: white; }
+        .btn-no { background: var(--success); color: white; }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+<div class="game-card" id="main-card">
+    <div id="game-content">
+        <div class="top-bar">
+            <button class="mini-btn" style="background:#ff7979" onclick="fullRestart()">RESTART</button>
+            <button class="mini-btn" id="mute-btn" style="background:#f9ca24" onclick="toggleMute()">SOUND: OFF</button>
+            <button class="mini-btn" style="background:#7ed6df" onclick="document.body.classList.toggle('dark-mode')">THEME</button>
+        </div>
+        <div class="title-l1">SUPIRI HAPANA</div>
+        <div class="title-l2">Grade - 5</div>
+        <div class="title-l3">English WORDS Builder - 01</div>
+        <div class="timer-track"><div id="time-bar"></div></div>
+        <div class="instruction">● Fill in the missing letters.</div>
+        <div class="meaning-box" id="meaning-text">...</div>
+        <div class="target-box" id="target-area"></div>
+        <div id="msg-text"></div>
+        <div class="pool-box" id="source-area"></div>
+        <div class="footer">
+            <div class="stats-row"><span>SCORE: <span id="score-val">0</span></span><button class="clear-btn" onclick="clearSelection()">CLEAR</button></div>
+            <div class="stats-row" style="font-size: 14px; border-top: 1px solid #4b5463; padding-top: 5px; justify-content: center;"><span style="color: #f0932b;">BEST SCORE: <span id="best-score-val">0</span></span></div>
+        </div>
+    </div>
+    <div class="modal-overlay" id="exit-modal">
+        <div class="modal-box"><h3>අපි මේ Game එකෙන් ඉවත් වෙනවාද?</h3><div class="modal-btns"><button class="modal-btn btn-yes" onclick="confirmExit()">ඔව්</button><button class="modal-btn btn-no" onclick="closeModal()">නැහැ</button></div></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+// ආරක්ෂක පියවර: Shortcut keys අවහිර කිරීම
+document.onkeydown = function(e) {
+    if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 86 || e.keyCode === 85 || e.keyCode === 73)) return false;
+};
+
+(function(_0x1,_0x2){const _0x3=function(_0x4){while(--_0x4){_0x1['push'](_0x1['shift']());}};_0x3(++_0x2);}(['load','setItem','length','supiriCurrentScore01','supiriLevel01','getItem'],0x100));
+
+(function(){
+    let isMuted = false, startTime = Date.now();
+    let bestScore = localStorage.getItem('supiriBestScore01') || 0;
+    let level = parseInt(localStorage.getItem('supiriLevel01')) || 0;
+    let score = parseInt(localStorage.getItem('supiriCurrentScore01')) || 0;
+
+    document.getElementById('best-score-val').innerText = bestScore;
+    document.getElementById('score-val').innerText = score;
+
+    window.toggleMute = () => { isMuted = !isMuted; document.getElementById('mute-btn').innerText = isMuted ? "SOUND: ON" : "SOUND: OFF"; };
+    window.fullRestart = () => { localStorage.removeItem('supiriLevel01'); localStorage.removeItem('supiriCurrentScore01'); location.reload(); };
+
+    function playTone(f, t, d) { if(isMuted) return; try { const c = new (window.AudioContext || window.webkitAudioContext)(); const o = c.createOscillator(); const g = c.createGain(); o.type = t; o.frequency.setValueAtTime(f, c.currentTime); o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(0.2, c.currentTime); g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + d); o.start(); o.stop(c.currentTime + d); } catch(e){} }
+
+    const db = [
+        {w: "PEN", m: "පෑන", hints: [0, 2]}, {w: "CAT", m: "බළලා", hints: [0, 2]}, {w: "DOG", m: "බල්ලා", hints: [0, 2]}, {w: "SUN", m: "ඉර", hints: [0, 2]}, {w: "HAT", m: "තොප්පිය", hints: [0, 2]}, {w: "BAG", m: "බෑගය", hints: [0, 2]}, {w: "BOX", m: "පෙට්ටිය", hints: [0, 2]}, {w: "SKY", m: "අහස", hints: [0, 2]}, {w: "BOY", m: "පිරිමි ළමයා", hints: [0, 2]}, {w: "TOY", m: "සෙල්ලම් බඩුව", hints: [0, 2]},
+        {w: "TEA", m: "තේ", hints: [0, 2]}, {w: "CUP", m: "කෝප්පය", hints: [0, 2]}, {w: "FAN", m: "පංකාව", hints: [0, 2]}, {w: "BUS", m: "බස් රථය", hints: [0, 2]}, {w: "CAR", m: "මෝටර් රථය", hints: [0, 2]}, {w: "BOOK", m: "පොත", hints: [0, 2]}, {w: "THIS", m: "මෙය", hints: [0, 2]}, {w: "THAT", m: "අරය", hints: [0, 2]}, {w: "BIRD", m: "කුරුල්ලා", hints: [0, 2]}, {w: "FISH", m: "මාළු", hints: [0, 2]},
+        {w: "MILK", m: "කිරි", hints: [0, 2]}, {w: "RICE", m: "බත්", hints: [0, 2]}, {w: "DOOR", m: "දොර", hints: [0, 2]}, {w: "TREE", m: "ගස", hints: [0, 2]}, {w: "STAR", m: "තරුව", hints: [0, 2]}, {w: "MOON", m: "හඳ", hints: [0, 2]}, {w: "RAIN", m: "වැස්ස", hints: [0, 2]}, {w: "BALL", m: "බෝලය", hints: [0, 2]}, {w: "DOLL", m: "බෝනික්කා", hints: [0, 2]}, {w: "KITE", m: "සරුංගලය", hints: [0, 2]},
+        {w: "FROG", m: "මැඩියා", hints: [0, 2]}, {w: "SHIP", m: "නැව", hints: [0, 2]}, {w: "BOAT", m: "බෝට්ටුව", hints: [0, 2]}, {w: "HEAD", m: "හිස", hints: [0, 2]}, {w: "HAND", m: "අත", hints: [0, 2]}, {w: "NOSE", m: "නාසය", hints: [0, 2]}, {w: "EYE", m: "ඇස", hints: [0, 2]}, {w: "FOOT", m: "පාදය", hints: [0, 2]}, {w: "BLUE", m: "නිල් පාට", hints: [0, 2]}, {w: "RED", m: "රතු පාට", hints: [0, 2]},
+        {w: "PINK", m: "රෝස පාට", hints: [0, 2]}, {w: "MAMA", m: "අම්මා", hints: [0, 2]}, {w: "PAPA", m: "තාත්තා", hints: [0, 2]}, {w: "FATHER", m: "පියා", hints: [0, 2, 4]}, {w: "MOTHER", m: "මව", hints: [0, 2, 4]}, {w: "SISTER", m: "සහෝදරිය", hints: [0, 2, 4]}, {w: "BROTHER", m: "සහෝදරයා", hints: [0, 2, 4, 6]}, {w: "WATER", m: "වතුර", hints: [0, 2, 4]}, {w: "BREAD", m: "පාන්", hints: [0, 2, 4]}, {w: "APPLE", m: "ඇපල්", hints: [0, 2, 4]},
+        {w: "MANGO", m: "අඹ", hints: [0, 2, 4]}, {w: "FRUIT", m: "පළතුර", hints: [0, 2, 4]}, {w: "LEAF", m: "කොළය", hints: [0, 2]}, {w: "FLOWER", m: "මල", hints: [0, 2, 4]}, {w: "GARDEN", m: "වත්ත", hints: [0, 2, 4]}, {w: "SCHOOL", m: "පාසල", hints: [0, 2, 4]}, {w: "CLASS", m: "පන්තිය", hints: [0, 2, 4]}, {w: "TABLE", m: "මේසය", hints: [0, 2, 4]}, {w: "CHAIR", m: "පුටුව", hints: [0, 2, 4]}, {w: "PLATE", m: "පිඟාන", hints: [0, 2, 4]},
+        {w: "SPOON", m: "හැන්ද", hints: [0, 2, 4]}, {w: "SHIRT", m: "කමිසය", hints: [0, 2, 4]}, {w: "FROCK", m: "ගවුම", hints: [0, 2, 4]}, {w: "CLOCK", m: "ඔරලෝසුව", hints: [0, 2, 4]}, {w: "THESE", m: "මේවා", hints: [0, 2, 4]}, {w: "THOSE", m: "අරවා", hints: [0, 2, 4]}, {w: "THERE", m: "එහි", hints: [0, 2, 4]}, {w: "WHERE", m: "කොහේද", hints: [0, 2, 4]}, {w: "HAPPY", m: "සතුටු", hints: [0, 2, 4]}, {w: "SMALL", m: "කුඩා", hints: [0, 2, 4]},
+        {w: "LARGE", m: "විශාල", hints: [0, 2, 4]}, {w: "CLEAN", m: "පිරිසිදු", hints: [0, 2, 4]}, {w: "GREEN", m: "කොළ පාට", hints: [0, 2, 4]}, {w: "WHITE", m: "සුදු පාට", hints: [0, 2, 4]}, {w: "BLACK", m: "කළු පාට", hints: [0, 2, 4]}, {w: "MOUSE", m: "මීයා", hints: [0, 2, 4]}, {w: "SNAKE", m: "සර්පයා", hints: [0, 2, 4]}, {w: "RABBIT", m: "හාවා", hints: [0, 2, 4]}, {w: "TIGER", m: "කොටියා", hints: [0, 2, 4]}, {w: "PLANE", m: "ගුවන් යානය", hints: [0, 2, 4]},
+        {w: "PILOT", m: "නියමුවා", hints: [0, 2, 4]}, {w: "NURSE", m: "හෙදිය", hints: [0, 2, 4]}, {w: "DOCTOR", m: "දොස්තර", hints: [0, 2, 4]}, {w: "FARMER", m: "ගොවියා", hints: [0, 2, 4]}, {w: "PENCIL", m: "පැන්සල", hints: [0, 2, 4]}, {w: "ERASER", m: "මකනය", hints: [0, 2, 4]}, {w: "BOTTLE", m: "බෝතලය", hints: [0, 2, 4]}, {w: "WINDOW", m: "ජනේලය", hints: [0, 2, 4]}, {w: "STREET", m: "වීදිය", hints: [0, 2, 4]}, {w: "MORNING", m: "උදෑසන", hints: [0, 2, 4, 6]},
+        {w: "EVENING", m: "සවස", hints: [0, 2, 4, 6]}, {w: "KITCHEN", m: "කුස්සිය", hints: [0, 2, 4, 6]}, {w: "BEDROOM", m: "නිදන කාමරය", hints: [0, 2, 4, 6]}, {w: "TEACHER", m: "ගුරුතුමා", hints: [0, 2, 4, 6]}, {w: "STUDENT", m: "ශිෂ්‍යයා", hints: [0, 2, 4, 6]}, {w: "ORANGE", m: "දොඩම්", hints: [0, 2, 4]}, {w: "BANANA", m: "කෙසෙල්", hints: [0, 2, 4, 5]}, {w: "UMBRELLA", m: "කුඩය", hints: [0, 2, 4, 6]}, {w: "ELEPHANT", m: "අලියා", hints: [0, 2, 4, 6]}, {w: "FRIEND", m: "මිතුරා", hints: [0, 2, 4]}
+    ];
+
+    let timer = 30, interval, selectedIndices = [], waiting = false;
+    window.openExitModal = () => document.getElementById('exit-modal').style.display = 'flex';
+    window.closeModal = () => document.getElementById('exit-modal').style.display = 'none';
+    window.confirmExit = () => { document.getElementById('exit-modal').innerHTML = '<div class="modal-box"><h3>ස්තූතියි! නැවත හමුවෙමු.</h3></div>'; setTimeout(() => { window.close(); location.reload(); }, 1500); };
+
+    function speak(t, c) { if(isMuted) { if(c) c(); return; } window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'en-US'; u.rate = 0.8; u.onend = () => { if (c) c(); }; window.speechSynthesis.speak(u); }
+    window.clearSelection = () => { selectedIndices = []; document.querySelectorAll('.word-btn').forEach(b => b.classList.remove('used')); render(); };
+
+    function load(){
+        if(level >= db.length){
+            if(score > bestScore) { localStorage.setItem('supiriBestScore01', score); bestScore = score; }
+            localStorage.removeItem('supiriLevel01'); localStorage.removeItem('supiriCurrentScore01');
+            let tt = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('main-card').innerHTML = `<div class="res-title">CONGRATULATIONS!</div><div class="res-score">Your Score: ${score}</div><div class="res-score" style="font-size:16px; color:var(--success)">Best Score: ${bestScore}</div><div class="res-time">Total Time: ${tt} Seconds</div><div class="res-promo">මීළගට<br><b>SUPIRI HAPANA</b><br><b>English WORDS Builder - 02</b><br>ලබා ගැනීමට අවශ්‍යනම්<br><b>"SUPIRI HAPANA<br>English WORDS Builder - 02"</b><br>ලෙස සදහන් කළ WhatsApp පණිවිඩයක්<br>පහත අංකයක් වෙත යොමු කරන්න.<div class="wa-section"><img class="wa-logo" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"><div class="wa-numbers">071 434 1 434<br>072 434 1 434<br>078 434 1 434</div></div></div><button class="res-btn" onclick="fullRestart()">PLAY AGAIN</button><button class="exit-btn" onclick="openExitModal()">EXIT</button><div class="modal-overlay" id="exit-modal"><div class="modal-box"><h3>අපි මේ Game එකෙන් ඉවත් වෙනවාද?</h3><div class="modal-btns"><button class="modal-btn btn-yes" onclick="confirmExit()">ඔව්</button><button class="modal-btn btn-no" onclick="closeModal()">නැහැ</button></div></div></div>`;
+            return;
+        }
+        localStorage.setItem('supiriLevel01', level); localStorage.setItem('supiriCurrentScore01', score);
+        waiting = false; timer = 30; selectedIndices = [];
+        document.getElementById('meaning-text').innerText = db[level].m;
+        document.getElementById('msg-text').innerText = '';
+        const pool = document.getElementById('source-area'); pool.innerHTML = '';
+        let needed = []; for(let i=0; i<db[level].w.length; i++) if(!db[level].hints.includes(i)) needed.push(db[level].w[i]);
+        const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; needed.push(alpha[Math.floor(Math.random()*26)], alpha[Math.floor(Math.random()*26)]);
+        needed.sort(() => Math.random() - 0.5).forEach(l => {
+            const b = document.createElement('button'); b.className = 'word-btn'; b.innerText = l;
+            b.onclick = () => { if(!waiting && selectedIndices.length < (db[level].w.length - db[level].hints.length)){ selectedIndices.push(l); b.classList.add('used'); render(); } };
+            pool.appendChild(b);
+        });
+        clearInterval(interval);
+        interval = setInterval(() => {
+            timer -= 0.1; const bar = document.getElementById('time-bar'); const p = (timer / 30) * 100;
+            bar.style.width = p + "%";
+            if(p > 50) bar.style.backgroundColor = "var(--success)";
+            else if(p > 25) bar.style.backgroundColor = "var(--warning)";
+            else bar.style.backgroundColor = "var(--danger)";
+            if(timer <= 0) { level++; load(); }
+        }, 100);
+        render();
+    }
+
+    function render(){
+        const area = document.getElementById('target-area'); area.innerHTML = '';
+        let fi = 0; const w = db[level].w;
+        for(let i=0; i<w.length; i++){
+            const s = document.createElement('div'); s.className = 'slot';
+            if(db[level].hints.includes(i)){ s.innerText = w[i]; s.classList.add('hint'); }
+            else { s.innerText = selectedIndices[fi] || ''; fi++; }
+            area.appendChild(s);
+        }
+        if(selectedIndices.length === (w.length - db[level].hints.length)) check();
+    }
+
+    function check(){
+        waiting = true; let final = ""; let fIdx = 0;
+        for(let i=0; i<db[level].w.length; i++){ if(db[level].hints.includes(i)) final += db[level].w[i]; else { final += selectedIndices[fIdx]; fIdx++; } }
+        if(final === db[level].w){
+            clearInterval(interval); score += 10; document.getElementById('score-val').innerText = score; document.getElementById('msg-text').innerHTML = '✅';
+            playTone(600, 'sine', 0.3); confetti({particleCount: 50, spread: 60});
+            speak("Excellent! You are correct. The word is " + db[level].w, () => setTimeout(() => { level++; load(); }, 500));
+        } else {
+            score = Math.max(0, score - 5); document.getElementById('score-val').innerText = score; document.getElementById('msg-text').innerHTML = '❌';
+            playTone(150, 'sawtooth', 0.4); speak("Sorry! You are wrong. Try again.", () => setTimeout(() => { clearSelection(); waiting = false; document.getElementById('msg-text').innerText = ''; }, 500));
+        }
+    }
+    load();
+})();
+</script>
+</body>
+</html>
